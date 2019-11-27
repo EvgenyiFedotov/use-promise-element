@@ -1,3 +1,5 @@
 node_modules
 dist
 typings
+yarn-error.log
+.DS_Store

@@ -8,7 +8,8 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "types": ["jest"]
   },
-  "exclude": ["./typings", "tests"]
+  "exclude": ["./typings", "types", "node_modules", "./tests"]
 }
