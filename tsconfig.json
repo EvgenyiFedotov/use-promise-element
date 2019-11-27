@@ -10,5 +10,5 @@
     "esModuleInterop": true,
     "jsx": "preserve"
   },
-  "exclude": ["./typings"]
+  "exclude": ["./typings", "tests"]
 }

@@ -6,7 +6,8 @@
   "typings": "./typings",
   "scripts": {
     "build": "./node_modules/.bin/tsc -p tsconfig.build.json",
-    "rebuild": "rm -fr dist typings && yarn build"
+    "rebuild": "rm -fr dist typings && yarn build",
+    "test": "./node_modules/.bin/jest"
   },
   "repository": {
     "type": "git",
@@ -26,9 +27,12 @@
   "homepage": "https://github.com/EvgenyiFedotov/use-node-promise#readme",
   "dependencies": {},
   "devDependencies": {
+    "@types/jest": "^24.0.23",
     "@types/react": "^16.9.13",
     "eslint": "^6.7.1",
     "eslint-plugin-prettier": "^3.1.1",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.2.0",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^4.1.0",
