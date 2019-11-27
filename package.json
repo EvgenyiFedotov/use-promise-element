@@ -1,0 +1,25 @@
+{
+  "name": "use-node-promise",
+  "version": "0.0.1",
+  "description": "React hook 'useNodePromise'",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EvgenyiFedotov/use-node-promise.git"
+  },
+  "keywords": [
+    "react",
+    "hook",
+    "promise",
+    "node"
+  ],
+  "author": "e.fedotov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EvgenyiFedotov/use-node-promise/issues"
+  },
+  "homepage": "https://github.com/EvgenyiFedotov/use-node-promise#readme"
+}
