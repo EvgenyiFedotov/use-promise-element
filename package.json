@@ -2,9 +2,9 @@
   "name": "use-node-promise",
   "version": "0.0.1",
   "description": "React hook 'useNodePromise'",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "./node_modules/.bin/typescript"
+    "build": "./node_modules/.bin/tsc -p tsconfig.build.json"
   },
   "repository": {
     "type": "git",
