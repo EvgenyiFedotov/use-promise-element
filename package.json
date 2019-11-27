@@ -22,7 +22,8 @@
     "url": "https://github.com/EvgenyiFedotov/use-node-promise/issues"
   },
   "homepage": "https://github.com/EvgenyiFedotov/use-node-promise#readme",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "typescript": "^3.7.2"
   }
 }
