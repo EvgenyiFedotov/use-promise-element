@@ -2,9 +2,11 @@
   "name": "use-node-promise",
   "version": "0.0.1",
   "description": "React hook 'useNodePromise'",
-  "main": "dist/index.js",
+  "main": "./dist",
+  "typings": "./typings",
   "scripts": {
-    "build": "./node_modules/.bin/tsc -p tsconfig.build.json"
+    "build": "./node_modules/.bin/tsc -p tsconfig.build.json",
+    "rebuild": "rm -fr dist typings && yarn build"
   },
   "repository": {
     "type": "git",
