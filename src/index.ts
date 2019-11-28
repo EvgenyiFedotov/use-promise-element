@@ -5,7 +5,7 @@ export type ResolveReject<R = any> = (
   reject: (reason?: any) => void,
 ) => any;
 
-export type UseNodePromise<R = any, P = {}> = [
+export type UseNodePromiseResult<R = any, P = {}> = [
   React.ReactNode,
   (props: P, resolveReject?: ResolveReject<R>) => Promise<R>,
 ];
@@ -13,7 +13,7 @@ export type UseNodePromise<R = any, P = {}> = [
 export const useNodePromise = <R = any, P = {}>(
   component: React.ComponentClass | React.FC,
   mainResolveReject: ResolveReject<R> = () => {},
-): UseNodePromise<R, P> => {
+): UseNodePromiseResult<R, P> => {
   const [value, setValue] = React.useState<React.ReactNode>(
     React.createElement(React.Fragment),
   );
