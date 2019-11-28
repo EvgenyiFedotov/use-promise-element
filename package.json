@@ -8,7 +8,9 @@
     "test": "./node_modules/.bin/jest",
     "minify": "./node_modules/.bin/minify",
     "build": "./node_modules/.bin/tsc -p tsconfig.build.json",
-    "rebuild": "rm -fr dist typings && yarn build"
+    "rebuild": "rm -fr dist typings && yarn build",
+    "link:pack": "sh ./link-pack.sh",
+    "unlink:pack": "sh ./unlink-pack.sh"
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,10 @@
     "hook",
     "promise",
     "node"
+  ],
+  "files": [
+    "dist",
+    "typings"
   ],
   "author": "e.fedotov",
   "license": "MIT",
