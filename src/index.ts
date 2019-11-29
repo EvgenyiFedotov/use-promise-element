@@ -1,30 +1,29 @@
 import * as React from "react";
 
-export type ResolveReject<R = any> = (
+export type GetProps<R = any, P = {}> = (
   resolve: (value?: R | PromiseLike<R> | undefined) => void,
   reject: (reason?: any) => void,
-) => any;
+) => P;
 
-export type UseNodePromiseResult<R = any, P = {}> = [
+export type Result<R = any, P = {}> = [
   React.ReactNode,
-  (props: P, resolveReject?: ResolveReject<R>) => Promise<R>,
+  (resolveReject?: GetProps<R, P>) => Promise<R>,
 ];
 
 export const useNodePromise = <R = any, P = {}>(
   component: React.ComponentClass | React.FC,
-  mainResolveReject: ResolveReject<R> = () => {},
-): UseNodePromiseResult<R, P> => {
+  getPropsHook?: GetProps<R, P>,
+): Result<R, P> => {
   const [value, setValue] = React.useState<React.ReactNode>(
     React.createElement(React.Fragment),
   );
 
   const create = React.useCallback(
-    (props: P, resolveReject: ResolveReject<R> = () => {}) => {
+    (getProps?: GetProps<R, P>) => {
       const result = new Promise<R>((resolve, reject) => {
         const nextValue = React.createElement(component, {
-          ...props,
-          ...mainResolveReject(resolve, reject),
-          ...resolveReject(resolve, reject),
+          ...(getPropsHook && getPropsHook(resolve, reject)),
+          ...(getProps && getProps(resolve, reject)),
         });
 
         setValue(nextValue);
