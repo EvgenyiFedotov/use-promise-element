@@ -12,29 +12,31 @@ export type Result<R = any, P = {}> = [
 
 export const useNodePromise = <R = any, P = {}>(
   component: React.ComponentClass | React.FC,
-  getPropsHook?: GetProps<R, P>,
+  getProps?: GetProps<R, P>,
 ): Result<R, P> => {
   const [value, setValue] = React.useState<React.ReactNode>(
     React.createElement(React.Fragment),
   );
 
-  const create = React.useCallback(
-    (getProps?: GetProps<R, P>) => {
+  const action = React.useCallback(
+    (getPropsAction?: GetProps<R, P>) => {
       const result = new Promise<R>((resolve, reject) => {
         const nextValue = React.createElement(component, {
-          ...(getPropsHook && getPropsHook(resolve, reject)),
           ...(getProps && getProps(resolve, reject)),
+          ...(getPropsAction && getPropsAction(resolve, reject)),
         });
 
         setValue(nextValue);
       });
 
-      result.finally(() => setValue(React.createElement(React.Fragment)));
+      result.finally(() => {
+        setValue(React.createElement(React.Fragment));
+      });
 
       return result;
     },
-    [component],
+    [component, getProps],
   );
 
-  return [value, create];
+  return [value, action];
 };
