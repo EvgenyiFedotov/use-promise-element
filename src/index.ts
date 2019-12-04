@@ -6,7 +6,7 @@ export type GetProps<R = any, P = {}> = (
 ) => P;
 
 export type Result<R = any, P = {}> = [
-  React.ReactNode,
+  React.ReactElement,
   (resolveReject?: GetProps<R, P>) => Promise<R>,
 ];
 
@@ -14,8 +14,12 @@ export const useNodePromise = <R = any, P = {}>(
   component: React.ComponentClass | React.FC,
   getProps?: GetProps<R, P>,
 ): Result<R, P> => {
-  const [value, setValue] = React.useState<React.ReactNode>(
+  const [value, setValue] = React.useState<React.ReactElement>(
     React.createElement(React.Fragment),
+  );
+
+  const [actionResult, setActionResult] = React.useState<Promise<R> | null>(
+    null,
   );
 
   const action = React.useCallback(
@@ -29,14 +33,28 @@ export const useNodePromise = <R = any, P = {}>(
         setValue(nextValue);
       });
 
-      result.finally(() => {
-        setValue(React.createElement(React.Fragment));
-      });
+      setActionResult(result);
 
       return result;
     },
     [component, getProps],
   );
+
+  React.useEffect(() => {
+    let mount = true;
+
+    if (actionResult) {
+      actionResult.finally(() => {
+        if (mount) {
+          setValue(React.createElement(React.Fragment));
+        }
+      });
+    }
+
+    return () => {
+      mount = false;
+    };
+  }, [actionResult]);
 
   return [value, action];
 };
