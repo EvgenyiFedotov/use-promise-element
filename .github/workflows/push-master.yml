@@ -1,6 +1,9 @@
-name: Tests pull request
+name: Build and publish
 
-on: pull_request
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   test:
@@ -18,10 +21,13 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: yarn install
+      - name: install
         run: yarn install
 
-      - name: yarn test
+      - name: test
         run: yarn test
         env:
           CI: true
+
+      - name: build
+        run: yarn build

@@ -6,35 +6,55 @@ export type GetProps<R = any, P = {}> = (
 ) => P;
 
 export type Result<R = any, P = {}> = [
-  React.ReactNode,
+  React.ReactElement,
   (resolveReject?: GetProps<R, P>) => Promise<R>,
 ];
 
 export const useNodePromise = <R = any, P = {}>(
   component: React.ComponentClass | React.FC,
-  getPropsHook?: GetProps<R, P>,
+  getProps?: GetProps<R, P>,
 ): Result<R, P> => {
-  const [value, setValue] = React.useState<React.ReactNode>(
+  const [value, setValue] = React.useState<React.ReactElement>(
     React.createElement(React.Fragment),
   );
 
-  const create = React.useCallback(
-    (getProps?: GetProps<R, P>) => {
+  const [actionResult, setActionResult] = React.useState<Promise<R> | null>(
+    null,
+  );
+
+  const action = React.useCallback(
+    (getPropsAction?: GetProps<R, P>) => {
       const result = new Promise<R>((resolve, reject) => {
         const nextValue = React.createElement(component, {
-          ...(getPropsHook && getPropsHook(resolve, reject)),
           ...(getProps && getProps(resolve, reject)),
+          ...(getPropsAction && getPropsAction(resolve, reject)),
         });
 
         setValue(nextValue);
       });
 
-      result.finally(() => setValue(React.createElement(React.Fragment)));
+      setActionResult(result);
 
       return result;
     },
-    [component],
+    [component, getProps],
   );
 
-  return [value, create];
+  React.useEffect(() => {
+    let mount = true;
+
+    if (actionResult) {
+      actionResult.finally(() => {
+        if (mount) {
+          setValue(React.createElement(React.Fragment));
+        }
+      });
+    }
+
+    return () => {
+      mount = false;
+    };
+  }, [actionResult]);
+
+  return [value, action];
 };
