@@ -40,13 +40,13 @@ const App: React.FC = (props) => {
 };
 
 describe("html app", () => {
-  test.skip("without modal", () => {
+  test("without modal", () => {
     const app = enzyme.mount(<App />);
 
     expect(app.html()).toBe("<div></div>");
   });
 
-  test.skip("with modal", async () => {
+  test("with modal", async () => {
     const app = enzyme.mount(<App />);
 
     app.simulate("click");
@@ -69,8 +69,6 @@ describe("html app", () => {
 
     app.update();
 
-    ReactTestUtils.act(() => {
-      console.log(app.find(Modal).length);
-    });
+    expect(app.find(Modal)).toHaveLength(0);
   });
 });
