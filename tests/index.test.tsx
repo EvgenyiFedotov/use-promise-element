@@ -2,9 +2,10 @@ import "@babel/polyfill";
 import * as React from "react";
 import * as enzyme from "enzyme";
 import ReactTestUtils from "react-dom/test-utils";
-import ReactDOM from "react-dom";
 
-import { useNodePromise } from "../src";
+import { useNodePromise, GetProps } from "../src";
+
+type ModalResolve = "success" | "cancel";
 
 interface ModalProps {
   onClose?(e: React.MouseEvent<HTMLDivElement>): void;
@@ -19,7 +20,10 @@ const Modal: React.FC<ModalProps> = (props) => {
   );
 };
 
-const modalCreateProps = (resolve, reject) => ({
+const modalCreateProps: GetProps<ModalResolve, ModalProps> = (
+  resolve,
+  reject,
+) => ({
   onClose: (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     resolve();
