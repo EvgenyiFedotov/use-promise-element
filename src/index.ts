@@ -1,15 +1,5 @@
 import * as React from "react";
 
-export type GetProps<R = any, P = {}> = (
-  resolve: (value?: R | PromiseLike<R> | undefined) => void,
-  reject: (reason?: any) => void,
-) => P;
-
-export type Result<R = any, P = {}> = [
-  React.ReactElement,
-  (resolveReject?: GetProps<R, P>) => Promise<R>,
-];
-
 export const useNodePromise = <R = any, P = {}>(
   component: React.ComponentClass | React.FC,
   getProps?: GetProps<R, P>,
@@ -58,3 +48,13 @@ export const useNodePromise = <R = any, P = {}>(
 
   return [value, action];
 };
+
+export type GetProps<R = any, P = {}> = (
+  resolve: (value?: R | PromiseLike<R> | undefined) => void,
+  reject: (reason?: any) => void,
+) => P;
+
+export type Result<R = any, P = {}> = [
+  React.ReactElement,
+  (resolveReject?: GetProps<R, P>) => Promise<R>,
+];
