@@ -5,11 +5,12 @@
   "main": "./dist",
   "typings": "./typings",
   "scripts": {
+    "clean": "rm -fr dist typings",
     "test": "./node_modules/.bin/jest",
     "minify": "./node_modules/.bin/minify dist/index.js --out-file dist/index.js",
     "postbuild": "yarn minify",
     "build": "./node_modules/.bin/tsc -p tsconfig.build.json",
-    "rebuild": "rm -fr dist typings && yarn build",
+    "rebuild": "yarn clean && yarn build",
     "link:pack": "sh ./scripts/link-pack.sh",
     "unlink:pack": "sh ./scripts/unlink-pack.sh",
     "prepack": "yarn rebuild"
