@@ -1,33 +1,29 @@
 import * as React from "react";
 
-export type GetProps<Result = any, Props extends object = {}> = (
+export type GetProps<
+  Result = any,
+  Props extends object = {
+    onSuccess(): void;
+    onCancel(): void;
+  }
+> = (
   resolve: (value?: Result | PromiseLike<Result> | undefined) => void,
   reject: (reason?: any) => void,
 ) => Props;
 
-export type DefaultProps = GetProps<
-  any,
-  {
-    onSuccess(): void;
-    onCancel(): void;
-  }
->;
-
-type Open<Result = any, Props extends object = DefaultProps> = (
+type Open<Result = any, Props extends object = {}> = (
   getProps?: GetProps<Result, Props>,
 ) => Promise<Result>;
 
 type Close = () => void;
 
-export type UseNodePromise<
-  Result = any,
-  Props extends object = DefaultProps
-> = [React.ReactElement | null, Open<Result, Props>, Close];
+export type UseNodePromise<Result = any, Props extends object = {}> = [
+  React.ReactElement | null,
+  Open<Result, Props>,
+  Close,
+];
 
-export const useNodePromise = <
-  Result = any,
-  Props extends object = DefaultProps
->(
+export const useNodePromise = <Result = any, Props extends object = {}>(
   component: React.ComponentClass<Props | object> | React.FC<Props | object>,
   getProps?: GetProps<Result, Props>,
 ): UseNodePromise<Result, Props> => {
