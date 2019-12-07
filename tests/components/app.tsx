@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { useNodePromise, GetProps } from "../../src";
 import { Modal, ModalProps } from "./modal";
+import { Confirm } from "./confirm";
 
 type ResolveResult = "success" | "cancel";
 
@@ -13,8 +14,6 @@ const modalCreateProps: GetProps<ResolveResult, ModalProps> = (
   onCancel: () => resolve("cancel"),
   onError: () => reject(),
 });
-
-export const Confirm = Modal;
 
 export const App: React.FC = () => {
   const [modal, open, close] = useNodePromise(Modal, modalCreateProps);

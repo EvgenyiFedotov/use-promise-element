@@ -4,7 +4,8 @@ import * as enzyme from "enzyme";
 import ReactTestUtils from "react-dom/test-utils";
 
 import { Modal } from "./components/modal";
-import { App, Confirm } from "./components/app";
+import { Confirm } from "./components/confirm";
+import { App } from "./components/app";
 
 let app: enzyme.ReactWrapper;
 
@@ -136,7 +137,7 @@ describe("open modal confirm without props", () => {
 
   describe("close", () => {
     beforeEach(async () => {
-      await simulate(app.find(Confirm).find(".modal-success"), "click");
+      await simulate(app.find(Confirm).find(".confirm-success"), "click");
     });
 
     test("exist modal", () => {
