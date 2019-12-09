@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Modal, ModalWrapper } from "./ui/modal";
+
 export default {
   title: "usePromoiseElement",
 };
@@ -13,3 +15,19 @@ export const withEmoji = () => (
     </span>
   </button>
 );
+
+export const modal = () => {
+  return (
+    <ModalWrapper>
+      <Modal />
+    </ModalWrapper>
+  );
+};
+
+export const modalWithTitle = () => {
+  return (
+    <ModalWrapper>
+      <Modal title="Set other title" />
+    </ModalWrapper>
+  );
+};
