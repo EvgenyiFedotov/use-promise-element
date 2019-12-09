@@ -233,12 +233,15 @@ export const App: React.FC = () => {
       <button className="app-open" onClick={onOpen}>
         Open
       </button>
+
       <button className="app-open-with-props" onClick={onOpenWithTitle}>
         Open with props
       </button>
+
       <button className="app-open-confirm" onClick={onOpenConfrim}>
         Open confirm
       </button>
+
       <button className="app-close" onClick={onClose}>
         Close
       </button>
