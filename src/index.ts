@@ -1,60 +1,111 @@
 import * as React from "react";
 
-export type GetProps<R = any, P = {}> = (
-  resolve: (value?: R | PromiseLike<R> | undefined) => void,
+/**
+ * Type method getting props
+ */
+export type GetProps<
+  Result = any,
+  Props extends object = {
+    onSuccess(): void;
+    onCancel(): void;
+  }
+> = (
+  resolve: (value?: Result | PromiseLike<Result> | undefined) => void,
   reject: (reason?: any) => void,
-) => P;
+) => Props;
 
-export type Result<R = any, P = {}> = [
-  React.ReactElement,
-  (resolveReject?: GetProps<R, P>) => Promise<R>,
+/**
+ * Type method opening component
+ */
+type Open<Result = any, Props extends object = {}> = (
+  getProps?: GetProps<Result, Props>,
+) => Promise<Result>;
+
+/**
+ * Type method closing component
+ */
+type Close = () => void;
+
+/**
+ * Type returns hook 'usePromiseElement'
+ */
+type UsePromiseElement<Result = any, Props extends object = {}> = [
+  React.ReactElement | null,
+  Open<Result, Props>,
+  Close,
 ];
 
-export const useNodePromise = <R = any, P = {}>(
-  component: React.ComponentClass | React.FC,
-  getProps?: GetProps<R, P>,
-): Result<R, P> => {
-  const [value, setValue] = React.useState<React.ReactElement>(
-    React.createElement(React.Fragment),
-  );
+/**
+ * @param component React component witch will be create when run method 'open'
+ * @param getProps Function to getting props 'component' when run method 'open'
+ */
+export const usePromiseElement = <Result = any, Props extends object = {}>(
+  component: React.ComponentClass<Props | object> | React.FC<Props | object>,
+  getProps?: GetProps<Result, Props>,
+): UsePromiseElement<Result, Props> => {
+  // State with component
+  const [element, setElement] = React.useState<React.ReactElement<
+    Props | object
+  > | null>(null);
 
-  const [actionResult, setActionResult] = React.useState<Promise<R> | null>(
+  // State with return method 'open'
+  const [openResult, setOpenResult] = React.useState<Promise<Result> | null>(
     null,
   );
 
-  const action = React.useCallback(
-    (getPropsAction?: GetProps<R, P>) => {
-      const result = new Promise<R>((resolve, reject) => {
-        const nextValue = React.createElement(component, {
+  // Method to opening (create) component
+  const open = React.useCallback(
+    (getPropsAction?: GetProps<Result, Props>) => {
+      const result = new Promise<Result>((resolve, reject) => {
+        let props: Props | object = {
           ...(getProps && getProps(resolve, reject)),
           ...(getPropsAction && getPropsAction(resolve, reject)),
-        });
+        };
 
-        setValue(nextValue);
+        // Set default props
+        if (!Object.keys(props).length) {
+          props = {
+            onSuccess: resolve,
+            onCancel: reject,
+          };
+        }
+
+        setElement(React.createElement<Props | object>(component, props));
       });
 
-      setActionResult(result);
+      setOpenResult(result);
 
       return result;
     },
     [component, getProps],
   );
 
+  // Method to closing component
+  const close = React.useCallback(() => {
+    setElement(null);
+  }, []);
+
+  /**
+   * Process promise in effect because component maybe unmount
+   * If component doesn't unmount hide him
+   */
   React.useEffect(() => {
     let mount = true;
 
-    if (actionResult) {
-      actionResult.finally(() => {
-        if (mount) {
-          setValue(React.createElement(React.Fragment));
-        }
-      });
+    if (openResult) {
+      openResult
+        .catch((er) => er)
+        .finally(() => {
+          if (mount) {
+            close();
+          }
+        });
     }
 
     return () => {
       mount = false;
     };
-  }, [actionResult]);
+  }, [openResult]);
 
-  return [value, action];
+  return [element, open, close];
 };
