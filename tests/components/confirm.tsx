@@ -13,12 +13,15 @@ export const Confirm: React.FC<ConfirmProps> = (props) => {
   return (
     <div className="confirm">
       <div className="confirm-title">{title}</div>
+
       <button className="confirm-success" onClick={props.onSuccess}>
         Success
       </button>
+
       <button className="confirm-close" onClick={props.onCancel}>
         Cancel
       </button>
+
       <button className="confirm-error" onClick={props.onError}>
         Error
       </button>

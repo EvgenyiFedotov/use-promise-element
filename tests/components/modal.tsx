@@ -13,12 +13,15 @@ export const Modal: React.FC<ModalProps> = (props) => {
   return (
     <div className="modal">
       <div className="modal-title">{title}</div>
+
       <button className="modal-success" onClick={props.onSuccess}>
         Success
       </button>
+
       <button className="modal-close" onClick={props.onCancel}>
         Cancel
       </button>
+
       <button className="modal-error" onClick={props.onError}>
         Error
       </button>

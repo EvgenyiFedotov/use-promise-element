@@ -4,8 +4,10 @@ import { useNodePromise, GetProps } from "../../src";
 import { Modal, ModalProps } from "./modal";
 import { Confirm } from "./confirm";
 
+// Result modal promise
 type ResolveResult = "success" | "cancel";
 
+// Function to getting props component
 const modalCreateProps: GetProps<ResolveResult, ModalProps> = (
   resolve,
   reject,
@@ -16,12 +18,18 @@ const modalCreateProps: GetProps<ResolveResult, ModalProps> = (
 });
 
 export const App: React.FC = () => {
+  // State with modal component
   const [modal, open, close] = useNodePromise(Modal, modalCreateProps);
+
+  // State with confirm (same modal) component (here use default props from hook)
   const [confirm, openConfirm] = useNodePromise(Confirm);
+
+  // State with result hooks with components: 'modal', 'confirm'
   const [result, setResult] = React.useState<ResolveResult | "error" | null>(
     null,
   );
 
+  // Open 'modal'
   const onOpen = React.useCallback(async () => {
     try {
       const openRes = await open();
@@ -31,17 +39,20 @@ export const App: React.FC = () => {
     }
   }, [open]);
 
+  // Open 'modal' and setup 'title' prop
   const onOpenWithTitle = React.useCallback(async () => {
     await open(() => ({
       title: "Confirm title",
     }));
   }, [open]);
 
+  // Open 'confirm'
   const onOpenConfrim = React.useCallback(async () => {
     await openConfirm();
     setResult("success");
   }, [openConfirm]);
 
+  // Close 'modal'
   const onClose = React.useCallback(() => {
     close();
     setResult(null);
@@ -62,7 +73,10 @@ export const App: React.FC = () => {
         Close
       </button>
 
+      {/* Here insert 'modal' */}
       {modal}
+
+      {/* Here insert 'confirm' */}
       {confirm}
 
       <div className="app-result">{result}</div>
