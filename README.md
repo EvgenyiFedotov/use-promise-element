@@ -14,141 +14,239 @@ yarn add use-node-promise
 
 ## Documentation
 
-### `useNodePromise`
+### Methods
 
-```typescript
-const useNodePromise: <R = any, P = {}>(
-  component: React.ComponentClass<{}, any> | React.FC<{}>,
-  getProps?: GetProps<R, P> | undefined,
-) => Result<R, P>;
+#### `useNodePromise` (export)
+
+[`[GetProps]`](#getprops-export) [`[UseNodePromise]`](#UseNodePromise)
+
+```ts
+/**
+ * @param component React component witch will be create when run method 'open'
+ * @param getProps Function to getting props 'component' when run method 'open'
+ */
+export declare const useNodePromise: <Result = any, Props extends object = {}>(
+  component:
+    | React.ComponentClass<object | Props, any>
+    | React.FC<object | Props>,
+  getProps?: GetProps<Result, Props> | undefined,
+) => UseNodePromise<Result, Props>;
 ```
 
-### `GetProps`
+### Types
 
-```typescript
-type GetProps<R = any, P = {}> = (
-  resolve: (value?: R | PromiseLike<R> | undefined) => void,
+#### `GetProps` (export)
+
+```ts
+/**
+ * Type method getting props
+ */
+type GetProps<
+  Result = any,
+  Props extends object = {
+    onSuccess(): void;
+    onCancel(): void;
+  }
+> = (
+  resolve: (value?: Result | PromiseLike<Result> | undefined) => void,
   reject: (reason?: any) => void,
-) => P;
+) => Props;
 ```
 
-### `Result`
+#### `UseNodePromise`
 
-```typescript
-type Result<R = any, P = {}> = [
-  React.ReactElement,
-  (resolveReject?: GetProps<R, P>) => Promise<R>,
+[`[Open]`](#Open) [`[Close]`](#Close)
+
+```ts
+/**
+ * Type returns hook 'useNodePromise'
+ */
+type UseNodePromise<Result = any, Props extends object = {}> = [
+  React.ReactElement | null,
+  Open<Result, Props>,
+  Close,
 ];
+```
+
+#### `Open`
+
+[`[GetProps]`](#getprops-export)
+
+```ts
+/**
+ * Type method opening component
+ */
+type Open<Result = any, Props extends object = {}> = (
+  getProps?: GetProps<Result, Props>,
+) => Promise<Result>;
+```
+
+#### `Close`
+
+```ts
+/**
+ * Type method closing component
+ */
+type Close = () => void;
 ```
 
 ## Example
 
-Component modal window.
-
-_src/modal.tsx_
+_./src/modal.tsx_
 
 ```tsx
 import * as React from "react";
 
-export type ModalResolve = "success" | "cancel";
-
 export interface ModalProps {
-  onClose(res: Resolve): void;
-  onError(): void;
   title?: string;
+  onSuccess?(): void;
+  onCancel?(): void;
+  onError?(): void;
 }
 
 export const Modal: React.FC<ModalProps> = (props) => {
-  const { title = "Modal", onClose = () => {} } = props;
+  const { title = "Title" } = props;
 
   return (
-    <div>
-      <div className="title">{title}</div>
-      <button onClick={() => onClose("success")}>Success</button>
-      <button onClick={() => onClose("cancel")}>Cancel</button>
-      <button onClick={props.onError}>Test error</button>
+    <div className="modal">
+      <div className="modal-title">{title}</div>
+
+      <button className="modal-success" onClick={props.onSuccess}>
+        Success
+      </button>
+
+      <button className="modal-close" onClick={props.onCancel}>
+        Cancel
+      </button>
+
+      <button className="modal-error" onClick={props.onError}>
+        Error
+      </button>
     </div>
   );
 };
 ```
 
-Component application
+_./src/confirm.tsx_
 
-_src/app.tss_
+```tsx
+import * as React from "react";
+
+export interface ConfirmProps {
+  title?: string;
+  onSuccess?(): void;
+  onCancel?(): void;
+  onError?(): void;
+}
+
+export const Confirm: React.FC<ConfirmProps> = (props) => {
+  const { title = "Title" } = props;
+
+  return (
+    <div className="confirm">
+      <div className="confirm-title">{title}</div>
+
+      <button className="confirm-success" onClick={props.onSuccess}>
+        Success
+      </button>
+
+      <button className="confirm-close" onClick={props.onCancel}>
+        Cancel
+      </button>
+
+      <button className="confirm-error" onClick={props.onError}>
+        Error
+      </button>
+    </div>
+  );
+};
+```
+
+_./src/app.tsx_
 
 ```tsx
 import * as React from "react";
 import { useNodePromise, GetProps } from "use-node-promise";
-import { Modal, ModalResolve, ModalProps } from "./modal"; // "./src/modal.tsx"
 
-const getModalProps: GetProps<ModalResolve, ModalProps> = (
+import { Modal, ModalProps } from "./modal";
+import { Confirm } from "./confirm";
+
+// Result modal promise
+type ResolveResult = "success" | "cancel";
+
+// Function to getting props component
+const modalCreateProps: GetProps<ResolveResult, ModalProps> = (
   resolve,
   reject,
 ) => ({
-  onClose: (res) => {
-    resolve(res);
-  },
-  onError: () => {
-    reject();
-  },
+  onSuccess: () => resolve("success"),
+  onCancel: () => resolve("cancel"),
+  onError: () => reject(),
 });
 
-const procResult = (res: ModalResolve) => {
-  if (result === "success") {
-    // code 'success'
-  } else {
-    // code 'cancel'
-  }
-};
-
 export const App: React.FC = () => {
-  const [modal, openModal] = useNodePromise<ModalResolve, ModalProps>(
-    Modal,
-    getModalProps,
+  // State with modal component
+  const [modal, open, close] = useNodePromise(Modal, modalCreateProps);
+
+  // State with confirm (same modal) component (here use default props from hook)
+  const [confirm, openConfirm] = useNodePromise(Confirm);
+
+  // State with result hooks with components: 'modal', 'confirm'
+  const [result, setResult] = React.useState<ResolveResult | "error" | null>(
+    null,
   );
 
-  /**
-   * Use default props modal from 'getModalProps'
-   */
-  const openBaseModal = React.useCallback(async () => {
+  // Open 'modal'
+  const onOpen = React.useCallback(async () => {
     try {
-      procResult(await openModal());
+      const openRes = await open();
+      setResult(openRes);
     } catch (e) {
-      // code
+      setResult("error");
     }
-  }, [openModal]);
+  }, [open]);
 
-  /**
-   * Use default props modal from 'getModalProps'
-   * and specific props
-   *
-   * Props merged:
-   * {
-   *    ...getModalProps(resolve, reject),
-   *    ...getSpecificProps(resolve, reject),
-   * }
-   */
-  const openSpecificModal = React.useCallback(() => {
-    try {
-      procResult(
-        await openModal((resolve) => ({
-          title: "Create new item?",
-          onClose: () => {
-            resolve("success");
-          },
-        })),
-      );
-    } catch (e) {
-      // code
-    }
-  }, [openModal]);
+  // Open 'modal' and setup 'title' prop
+  const onOpenWithTitle = React.useCallback(async () => {
+    await open(() => ({
+      title: "Confirm title",
+    }));
+  }, [open]);
+
+  // Open 'confirm'
+  const onOpenConfrim = React.useCallback(async () => {
+    await openConfirm();
+    setResult("success");
+  }, [openConfirm]);
+
+  // Close 'modal'
+  const onClose = React.useCallback(() => {
+    close();
+    setResult(null);
+  }, [close]);
 
   return (
     <div>
-      <button onClick={openBaseModal}>Open base modal</button>
-      <button onClick={openSpecificModal}>Open specific modal</button>
+      <button className="app-open" onClick={onOpen}>
+        Open
+      </button>
+      <button className="app-open-with-props" onClick={onOpenWithTitle}>
+        Open with props
+      </button>
+      <button className="app-open-confirm" onClick={onOpenConfrim}>
+        Open confirm
+      </button>
+      <button className="app-close" onClick={onClose}>
+        Close
+      </button>
 
+      {/* Here insert 'modal' */}
       {modal}
+
+      {/* Here insert 'confirm' */}
+      {confirm}
+
+      <div className="app-result">{result}</div>
     </div>
   );
 };
@@ -165,6 +263,3 @@ npm run test
 yarn install
 yarn test
 ```
-
-> Please note! Tests have skip test, exist problem in `React` or `test environment`.
-> This case tested in `react` application.
