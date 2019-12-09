@@ -1,5 +1,8 @@
 import * as React from "react";
 
+/**
+ * Type method getting props
+ */
 export type GetProps<
   Result = any,
   Props extends object = {
@@ -11,30 +14,46 @@ export type GetProps<
   reject: (reason?: any) => void,
 ) => Props;
 
+/**
+ * Type method opening component
+ */
 type Open<Result = any, Props extends object = {}> = (
   getProps?: GetProps<Result, Props>,
 ) => Promise<Result>;
 
+/**
+ * Type method closing component
+ */
 type Close = () => void;
 
-export type UseNodePromise<Result = any, Props extends object = {}> = [
+/**
+ * Type returns hook 'useNodePromise'
+ */
+type UseNodePromise<Result = any, Props extends object = {}> = [
   React.ReactElement | null,
   Open<Result, Props>,
   Close,
 ];
 
+/**
+ * @param component React component witch will be create when run method 'open'
+ * @param getProps Function to getting props 'component' when run method 'open'
+ */
 export const useNodePromise = <Result = any, Props extends object = {}>(
   component: React.ComponentClass<Props | object> | React.FC<Props | object>,
   getProps?: GetProps<Result, Props>,
 ): UseNodePromise<Result, Props> => {
+  // State with component
   const [element, setElement] = React.useState<React.ReactElement<
     Props | object
   > | null>(null);
 
+  // State with return method 'open'
   const [openResult, setOpenResult] = React.useState<Promise<Result> | null>(
     null,
   );
 
+  // Method to opening (create) component
   const open = React.useCallback(
     (getPropsAction?: GetProps<Result, Props>) => {
       const result = new Promise<Result>((resolve, reject) => {
@@ -43,6 +62,7 @@ export const useNodePromise = <Result = any, Props extends object = {}>(
           ...(getPropsAction && getPropsAction(resolve, reject)),
         };
 
+        // Set default props
         if (!Object.keys(props).length) {
           props = {
             onSuccess: resolve,
@@ -50,9 +70,7 @@ export const useNodePromise = <Result = any, Props extends object = {}>(
           };
         }
 
-        const nextValue = React.createElement<Props | object>(component, props);
-
-        setElement(nextValue);
+        setElement(React.createElement<Props | object>(component, props));
       });
 
       setOpenResult(result);
@@ -62,10 +80,15 @@ export const useNodePromise = <Result = any, Props extends object = {}>(
     [component, getProps],
   );
 
+  // Method to closing component
   const close = React.useCallback(() => {
     setElement(null);
   }, []);
 
+  /**
+   * Process promise in effect because component maybe unmount
+   * If component doesn't unmount hide him
+   */
   React.useEffect(() => {
     let mount = true;
 
