@@ -1,7 +1,7 @@
 {
-  "name": "use-node-promise",
+  "name": "use-promise-element",
   "version": "0.0.1",
-  "description": "React hook 'useNodePromise'",
+  "description": "React hook 'usePromiseElement'",
   "main": "./dist",
   "typings": "./typings",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EvgenyiFedotov/use-node-promise.git"
+    "url": "git+https://github.com/EvgenyiFedotov/use-promise-element.git"
   },
   "keywords": [
     "react",
@@ -32,9 +32,9 @@
   "author": "e.fedotov",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/EvgenyiFedotov/use-node-promise/issues"
+    "url": "https://github.com/EvgenyiFedotov/use-promise-element/issues"
   },
-  "homepage": "https://github.com/EvgenyiFedotov/use-node-promise#readme",
+  "homepage": "https://github.com/EvgenyiFedotov/use-promise-element#readme",
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.7.4",

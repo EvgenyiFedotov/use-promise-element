@@ -1,4 +1,4 @@
-# 🛠 React hook 'useNodePromise'
+# 🛠 React hook 'usePromiseElement'
 
 This hook was created to solve the problem with confirm modal window. But one you can use to solve other tasks if you wrap sub component into promise and waiting answer of him.
 
@@ -6,31 +6,34 @@ This hook was created to solve the problem with confirm modal window. But one yo
 
 ```sh
 # npm
-npm install use-node-promise
+npm install use-promise-element
 
 # yarn
-yarn add use-node-promise
+yarn add use-promise-element
 ```
 
 ## Documentation
 
 ### Methods
 
-#### `useNodePromise` (export)
+#### `usePromiseElement` (export)
 
-[`[GetProps]`](#getprops-export) [`[UseNodePromise]`](#UseNodePromise)
+[`[GetProps]`](#getprops-export) [`[UsePromiseElement]`](#UsePromiseElement)
 
 ```ts
 /**
  * @param component React component witch will be create when run method 'open'
  * @param getProps Function to getting props 'component' when run method 'open'
  */
-export declare const useNodePromise: <Result = any, Props extends object = {}>(
+export declare const usePromiseElement: <
+  Result = any,
+  Props extends object = {}
+>(
   component:
     | React.ComponentClass<object | Props, any>
     | React.FC<object | Props>,
   getProps?: GetProps<Result, Props> | undefined,
-) => UseNodePromise<Result, Props>;
+) => UsePromiseElement<Result, Props>;
 ```
 
 ### Types
@@ -53,15 +56,15 @@ type GetProps<
 ) => Props;
 ```
 
-#### `UseNodePromise`
+#### `UsePromiseElement`
 
 [`[Open]`](#Open) [`[Close]`](#Close)
 
 ```ts
 /**
- * Type returns hook 'useNodePromise'
+ * Type returns hook 'usePromiseElement'
  */
-type UseNodePromise<Result = any, Props extends object = {}> = [
+type UsePromiseElement<Result = any, Props extends object = {}> = [
   React.ReactElement | null,
   Open<Result, Props>,
   Close,
@@ -166,7 +169,7 @@ _./src/app.tsx_
 
 ```tsx
 import * as React from "react";
-import { useNodePromise, GetProps } from "use-node-promise";
+import { usePromiseElement, GetProps } from "use-promise-element";
 
 import { Modal, ModalProps } from "./modal";
 import { Confirm } from "./confirm";
@@ -186,10 +189,10 @@ const modalCreateProps: GetProps<ResolveResult, ModalProps> = (
 
 export const App: React.FC = () => {
   // State with modal component
-  const [modal, open, close] = useNodePromise(Modal, modalCreateProps);
+  const [modal, open, close] = usePromiseElement(Modal, modalCreateProps);
 
   // State with confirm (same modal) component (here use default props from hook)
-  const [confirm, openConfirm] = useNodePromise(Confirm);
+  const [confirm, openConfirm] = usePromiseElement(Confirm);
 
   // State with result hooks with components: 'modal', 'confirm'
   const [result, setResult] = React.useState<ResolveResult | "error" | null>(

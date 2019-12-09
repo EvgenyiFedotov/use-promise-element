@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { useNodePromise, GetProps } from "../../src";
+import { usePromiseElement, GetProps } from "../../src";
 import { Modal, ModalProps } from "./modal";
 import { Confirm } from "./confirm";
 
@@ -19,10 +19,10 @@ const modalCreateProps: GetProps<ResolveResult, ModalProps> = (
 
 export const App: React.FC = () => {
   // State with modal component
-  const [modal, open, close] = useNodePromise(Modal, modalCreateProps);
+  const [modal, open, close] = usePromiseElement(Modal, modalCreateProps);
 
   // State with confirm (same modal) component (here use default props from hook)
-  const [confirm, openConfirm] = useNodePromise(Confirm);
+  const [confirm, openConfirm] = usePromiseElement(Confirm);
 
   // State with result hooks with components: 'modal', 'confirm'
   const [result, setResult] = React.useState<ResolveResult | "error" | null>(

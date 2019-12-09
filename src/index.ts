@@ -27,9 +27,9 @@ type Open<Result = any, Props extends object = {}> = (
 type Close = () => void;
 
 /**
- * Type returns hook 'useNodePromise'
+ * Type returns hook 'usePromiseElement'
  */
-type UseNodePromise<Result = any, Props extends object = {}> = [
+type UsePromiseElement<Result = any, Props extends object = {}> = [
   React.ReactElement | null,
   Open<Result, Props>,
   Close,
@@ -39,10 +39,10 @@ type UseNodePromise<Result = any, Props extends object = {}> = [
  * @param component React component witch will be create when run method 'open'
  * @param getProps Function to getting props 'component' when run method 'open'
  */
-export const useNodePromise = <Result = any, Props extends object = {}>(
+export const usePromiseElement = <Result = any, Props extends object = {}>(
   component: React.ComponentClass<Props | object> | React.FC<Props | object>,
   getProps?: GetProps<Result, Props>,
-): UseNodePromise<Result, Props> => {
+): UsePromiseElement<Result, Props> => {
   // State with component
   const [element, setElement] = React.useState<React.ReactElement<
     Props | object
