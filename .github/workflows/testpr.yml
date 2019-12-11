@@ -47,7 +47,7 @@ jobs:
       - name: create branch
         run: |
           cd ./evgenyifedotov-github
-          git checkout -b origin/use-promise-element
+          git checkout -b use-promise-element
 
       - name: commit
         run: |
@@ -58,7 +58,7 @@ jobs:
       - name: push
         run: |
           cd ./evgenyifedotov-github
-          git push -u origin use-promise-element
+          git push -u -f origin use-promise-element
 
       - name: pull-request
         uses: repo-sync/pull-request@v2
