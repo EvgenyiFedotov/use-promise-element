@@ -33,8 +33,16 @@ jobs:
           repository: "EvgenyiFedotov/evgenyifedotov.github.io"
           path: "./evgenyifedotov-github"
 
-      - name: struct
+      - name: copy storybook-static
+        run: cp -r ./storybook-static/* ./evgenyifedotov-github/use-promise-element
+
+      - name: create branch, commit, push
         run: |
-          cp -r ./storybook-static/* ./evgenyifedotov-github
           cd ./evgenyifedotov-github
-          ls
+          git checkout -b use-promise-element
+          git add -A
+          git commit -m "[use-promise-element] update"
+          git push -u origin use-promise-element
+
+      - name: struct
+        run: ls
