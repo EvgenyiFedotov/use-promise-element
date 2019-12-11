@@ -34,7 +34,9 @@ jobs:
           path: "./evgenyifedotov-github"
 
       - name: copy storybook-static
-        run: cp -r ./storybook-static/* ./evgenyifedotov-github/use-promise-element
+        run: |
+          mkdir -p ./evgenyifedotov-github/use-promise-element
+          cp -r ./storybook-static/* ./evgenyifedotov-github/use-promise-element
 
       - name: create branch, commit, push
         run: |
