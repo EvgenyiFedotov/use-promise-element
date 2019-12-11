@@ -4,3 +4,4 @@ typings
 yarn-error.log
 .DS_Store
 storybook-static
+coverage
