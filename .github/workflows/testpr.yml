@@ -32,15 +32,28 @@ jobs:
         with:
           repository: "EvgenyiFedotov/evgenyifedotov.github.io"
           path: "./evgenyifedotov-github"
+          token: ${{ secrets.GITHUB_TOKEN_APP }}
 
       - name: copy storybook-static
         run: |
           mkdir -p ./evgenyifedotov-github/use-promise-element
           cp -r ./storybook-static/* ./evgenyifedotov-github/use-promise-element
 
-      - name: create branch, commit, push
+      - name: create branch
         run: |
           cd ./evgenyifedotov-github
+          git checkout -b use-promise-element
+
+      - name: commit
+        run: |
+          cd ./evgenyifedotov-github
+          git add -A
+          git commit -m "[use-promise-element] update"
+
+      - name: push
+        run: |
+          cd ./evgenyifedotov-github
+          git push -u origin use-promise-element
 
       - name: struct
         run: ls
