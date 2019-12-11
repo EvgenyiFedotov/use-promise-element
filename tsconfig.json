@@ -11,5 +11,11 @@
     "jsx": "preserve",
     "types": ["jest"]
   },
-  "exclude": ["./typings", "types", "node_modules", "./tests"]
+  "exclude": [
+    "./typings",
+    "types",
+    "node_modules",
+    "./tests",
+    "./**/*.stories.tsx"
+  ]
 }
