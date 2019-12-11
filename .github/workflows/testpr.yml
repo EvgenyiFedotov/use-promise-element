@@ -39,6 +39,11 @@ jobs:
           mkdir -p ./evgenyifedotov-github/use-promise-element
           cp -r ./storybook-static/* ./evgenyifedotov-github/use-promise-element
 
+      - name: setup repo
+        run: |
+          git config --global user.email "fedotov1290@gmail.com"
+          git config --global user.name "EvgenyiFedotov"
+
       - name: create branch
         run: |
           cd ./evgenyifedotov-github
