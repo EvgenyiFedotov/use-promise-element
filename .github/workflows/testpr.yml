@@ -47,7 +47,7 @@ jobs:
       - name: create branch
         run: |
           cd ./evgenyifedotov-github
-          git checkout -b use-promise-element
+          git checkout -b origin/use-promise-element
 
       - name: commit
         run: |
@@ -60,5 +60,9 @@ jobs:
           cd ./evgenyifedotov-github
           git push -u origin use-promise-element
 
-      - name: struct
-        run: ls
+      - name: pull-request
+        uses: repo-sync/pull-request@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN_APP }}
+          destination_branch: "master"
+          pr_title: "[use-promise-element] update"
