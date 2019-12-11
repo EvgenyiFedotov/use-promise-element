@@ -58,23 +58,33 @@ export const App: React.FC = () => {
     setResult(null);
   }, [close]);
 
+  const onCloseResultResolve = React.useCallback(() => {
+    close((resolve) => resolve("success"));
+  }, [close]);
+
+  const onCloseResultReject = React.useCallback(() => {
+    close((resolve, reject) => reject());
+  }, [close]);
+
   return (
     <div>
-      <button className="app-open" onClick={onOpen}>
-        Open
-      </button>
+      <button className="app-open" onClick={onOpen} />
 
-      <button className="app-open-with-props" onClick={onOpenWithTitle}>
-        Open with props
-      </button>
+      <button className="app-open-with-props" onClick={onOpenWithTitle} />
 
-      <button className="app-open-confirm" onClick={onOpenConfrim}>
-        Open confirm
-      </button>
+      <button className="app-open-confirm" onClick={onOpenConfrim} />
 
-      <button className="app-close" onClick={onClose}>
-        Close
-      </button>
+      <button className="app-close" onClick={onClose} />
+
+      <button
+        className="app-close-result-resolve"
+        onClick={onCloseResultResolve}
+      />
+
+      <button
+        className="app-close-result-reject"
+        onClick={onCloseResultReject}
+      />
 
       {/* Here insert 'modal' */}
       {modal}
