@@ -22,10 +22,6 @@ beforeEach(() => {
 });
 
 describe("modal didn't open", () => {
-  test("exist buttons", () => {
-    expect(app.find("button")).toHaveLength(4);
-  });
-
   test("result app", () => {
     expect(app.find(".app-result").text()).toBe("");
   });
@@ -79,16 +75,48 @@ describe("open modal", () => {
   });
 
   describe("close after run method 'close'", () => {
-    beforeEach(async () => {
-      await simulate(app.find(".app-close"), "click");
+    describe("without close result", () => {
+      beforeEach(async () => {
+        await simulate(app.find(".app-close"), "click");
+      });
+
+      test("exist modal", () => {
+        expect(app.find(Modal)).toHaveLength(0);
+      });
+
+      test("result app", () => {
+        expect(app.find(".app-result").text()).toBe("");
+      });
     });
 
-    test("exist modal", () => {
-      expect(app.find(Modal)).toHaveLength(0);
-    });
+    describe("with close result", () => {
+      describe("resolve", () => {
+        beforeEach(async () => {
+          await simulate(app.find(".app-close-result-resolve"), "click");
+        });
 
-    test("result app", () => {
-      expect(app.find(".app-result").text()).toBe("");
+        test("exist modal", () => {
+          expect(app.find(Modal)).toHaveLength(0);
+        });
+
+        test("result app", () => {
+          expect(app.find(".app-result").text()).toBe("success");
+        });
+      });
+
+      describe("reject", () => {
+        beforeEach(async () => {
+          await simulate(app.find(".app-close-result-reject"), "click");
+        });
+
+        test("exist modal", () => {
+          expect(app.find(Modal)).toHaveLength(0);
+        });
+
+        test("result app", () => {
+          expect(app.find(".app-result").text()).toBe("error");
+        });
+      });
     });
   });
 
