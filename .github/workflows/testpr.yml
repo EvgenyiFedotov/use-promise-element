@@ -1,4 +1,4 @@
-name: Build and publish
+name: Test pull request
 
 on:
   push:
@@ -29,4 +29,4 @@ jobs:
         run: yarn build-storybook
 
       - name: struct
-        run: ll
+        run: ls
