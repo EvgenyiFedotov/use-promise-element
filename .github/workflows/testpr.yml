@@ -28,6 +28,10 @@ jobs:
       - name: storybook build
         run: yarn build-storybook
 
+      - uses: actions/github@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN_APP }}
+
       - uses: actions/checkout@v2-beta
         with:
           repository: "EvgenyiFedotov/evgenyifedotov.github.io"
