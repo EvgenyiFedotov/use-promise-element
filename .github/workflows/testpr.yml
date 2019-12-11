@@ -34,4 +34,6 @@ jobs:
           path: "./evgenyifedotov-github"
 
       - name: struct
-        run: ls
+        run: |
+          cd ./evgenyifedotov-github
+          ll
