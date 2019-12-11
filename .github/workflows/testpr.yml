@@ -35,5 +35,6 @@ jobs:
 
       - name: struct
         run: |
+          cp -r ./storybook-static/* ./evgenyifedotov-github
           cd ./evgenyifedotov-github
           ls
