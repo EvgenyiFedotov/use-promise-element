@@ -1,4 +1,4 @@
-name: Test pull request
+name: Create storybook pr
 
 on:
   push:
@@ -27,6 +27,11 @@ jobs:
 
       - name: storybook build
         run: yarn build-storybook
+
+      - uses: actions/checkout@v2-beta
+        with:
+          repository: "EvgenyiFedotov/evgenyifedotov.github.io"
+          path: "./evgenyifedotov-github"
 
       - name: struct
         run: ls
