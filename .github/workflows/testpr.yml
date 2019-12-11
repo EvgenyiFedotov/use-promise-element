@@ -1,0 +1,32 @@
+name: Build and publish
+
+on:
+  push:
+    branches:
+      - actions-pr/next
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: install
+        run: yarn install
+
+      - name: storybook build
+        run: yarn build-storybook
+
+      - name: struct
+        run: ll
