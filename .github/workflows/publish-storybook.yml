@@ -49,6 +49,11 @@ jobs:
           cd ./evgenyifedotov-github
           git checkout -b use-promise-element
 
+      - name: create random file
+        run: |
+          cd ./evgenyifedotov-github
+          head -c 128 </dev/urandom >random-hash
+
       - name: commit
         run: |
           cd ./evgenyifedotov-github
