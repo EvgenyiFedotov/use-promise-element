@@ -1,6 +1,6 @@
 # 🛠 React hook 'usePromiseElement'
 
-[![npm](https://img.shields.io/npm/v/use-promise-element?style=flat-square)](https://www.npmjs.com/package/use-promise-element) [![npm bundle size](https://img.shields.io/bundlephobia/min/use-promise-element?color=success&label=minified&style=flat-square)](https://bundlephobia.com/result?p=use-promise-element) ![license](https://img.shields.io/npm/l/use-promise-element?style=flat-square) ![David](https://img.shields.io/david/EvgenyiFedotov/use-promise-element?style=flat-square)
+[![npm](https://img.shields.io/npm/v/use-promise-element?style=flat)](https://www.npmjs.com/package/use-promise-element) [![npm bundle size](https://img.shields.io/bundlephobia/min/use-promise-element?color=success&label=minified&style=flat)](https://bundlephobia.com/result?p=use-promise-element) ![license](https://img.shields.io/npm/l/use-promise-element?style=flat) ![David](https://img.shields.io/david/EvgenyiFedotov/use-promise-element?style=flat) [![Storybook](https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg)](https://evgenyifedotov.github.io/use-promise-element)
 
 This hook was created to solve the problem with confirm modal window. But one you can use to solve other tasks if you wrap sub component into promise and waiting answer of him.
 
