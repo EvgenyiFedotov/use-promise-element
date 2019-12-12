@@ -1,5 +1,7 @@
 # 🛠 React hook 'usePromiseElement'
 
+[![npm](https://img.shields.io/npm/v/use-promise-element?style=flat)](https://www.npmjs.com/package/use-promise-element) [![npm bundle size](https://img.shields.io/bundlephobia/min/use-promise-element?color=success&label=minified&style=flat)](https://bundlephobia.com/result?p=use-promise-element) ![license](https://img.shields.io/npm/l/use-promise-element?style=flat) ![David](https://img.shields.io/david/EvgenyiFedotov/use-promise-element?style=flat) [![Storybook](https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg)](https://evgenyifedotov.github.io/use-promise-element)
+
 This hook was created to solve the problem with confirm modal window. But one you can use to solve other tasks if you wrap sub component into promise and waiting answer of him.
 
 ## Install
@@ -67,7 +69,7 @@ type GetProps<
 type UsePromiseElement<Result = any, Props extends object = {}> = [
   React.ReactElement | null,
   Open<Result, Props>,
-  Close,
+  Close<Result>,
 ];
 ```
 
@@ -86,14 +88,30 @@ type Open<Result = any, Props extends object = {}> = (
 
 #### `Close`
 
+[`[CloseCallback]`](#CloseCallback)
+
 ```ts
 /**
  * Type method closing component
  */
-type Close = () => void;
+type Close<Result = any> = (callback?: CloseCallback<Result>) => void;
 ```
 
-## Example
+#### `CloseCallback`
+
+```ts
+/**
+ * Function callback for run getting result promise
+ */
+type CloseCallback<Result = any> = (
+  resolve: (value?: Result | PromiseLike<Result> | undefined) => void,
+  reject: (reason?: any) => void,
+) => void;
+```
+
+## Examples
+
+It is simple example, for get more examples see [**storybook**](https://evgenyifedotov.github.io/use-promise-element).
 
 _./src/modal.tsx_
 
@@ -101,18 +119,14 @@ _./src/modal.tsx_
 import * as React from "react";
 
 export interface ModalProps {
-  title?: string;
   onSuccess?(): void;
   onCancel?(): void;
-  onError?(): void;
 }
 
 export const Modal: React.FC<ModalProps> = (props) => {
-  const { title = "Title" } = props;
-
   return (
     <div className="modal">
-      <div className="modal-title">{title}</div>
+      <div className="modal-title">Modal window</div>
 
       <button className="modal-success" onClick={props.onSuccess}>
         Success
@@ -120,45 +134,6 @@ export const Modal: React.FC<ModalProps> = (props) => {
 
       <button className="modal-close" onClick={props.onCancel}>
         Cancel
-      </button>
-
-      <button className="modal-error" onClick={props.onError}>
-        Error
-      </button>
-    </div>
-  );
-};
-```
-
-_./src/confirm.tsx_
-
-```tsx
-import * as React from "react";
-
-export interface ConfirmProps {
-  title?: string;
-  onSuccess?(): void;
-  onCancel?(): void;
-  onError?(): void;
-}
-
-export const Confirm: React.FC<ConfirmProps> = (props) => {
-  const { title = "Title" } = props;
-
-  return (
-    <div className="confirm">
-      <div className="confirm-title">{title}</div>
-
-      <button className="confirm-success" onClick={props.onSuccess}>
-        Success
-      </button>
-
-      <button className="confirm-close" onClick={props.onCancel}>
-        Cancel
-      </button>
-
-      <button className="confirm-error" onClick={props.onError}>
-        Error
       </button>
     </div>
   );
@@ -169,90 +144,33 @@ _./src/app.tsx_
 
 ```tsx
 import * as React from "react";
-import { usePromiseElement, GetProps } from "use-promise-element";
-
-import { Modal, ModalProps } from "./modal";
-import { Confirm } from "./confirm";
-
-// Result modal promise
-type ResolveResult = "success" | "cancel";
-
-// Function to getting props component
-const modalCreateProps: GetProps<ResolveResult, ModalProps> = (
-  resolve,
-  reject,
-) => ({
-  onSuccess: () => resolve("success"),
-  onCancel: () => resolve("cancel"),
-  onError: () => reject(),
-});
+import { usePromiseElement } from "use-promise-element";
+import { Modal } from "./modal";
 
 export const App: React.FC = () => {
-  // State with modal component
-  const [modal, open, close] = usePromiseElement(Modal, modalCreateProps);
+  /**
+   * Use hook with set default props for component
+   * (resolve, reject) => ({ onSuccess: resolve, onCancel: reject })
+   */
+  const [modal, open] = usePromiseElement(Modal);
 
-  // State with confirm (same modal) component (here use default props from hook)
-  const [confirm, openConfirm] = usePromiseElement(Confirm);
-
-  // State with result hooks with components: 'modal', 'confirm'
-  const [result, setResult] = React.useState<ResolveResult | "error" | null>(
-    null,
-  );
-
-  // Open 'modal'
-  const onOpen = React.useCallback(async () => {
+  const clickOpne = React.useCallback(async () => {
     try {
-      const openRes = await open();
-      setResult(openRes);
+      // Open Modal (create Modal)
+      await open();
+
+      // Code after click on button 'Success' in Modal
     } catch (e) {
-      setResult("error");
+      // Code after click on button 'Cancel' in Modal
     }
   }, [open]);
 
-  // Open 'modal' and setup 'title' prop
-  const onOpenWithTitle = React.useCallback(async () => {
-    await open(() => ({
-      title: "Confirm title",
-    }));
-  }, [open]);
-
-  // Open 'confirm'
-  const onOpenConfrim = React.useCallback(async () => {
-    await openConfirm();
-    setResult("success");
-  }, [openConfirm]);
-
-  // Close 'modal'
-  const onClose = React.useCallback(() => {
-    close();
-    setResult(null);
-  }, [close]);
-
   return (
     <div>
-      <button className="app-open" onClick={onOpen}>
-        Open
-      </button>
+      <button>Open</button>
 
-      <button className="app-open-with-props" onClick={onOpenWithTitle}>
-        Open with props
-      </button>
-
-      <button className="app-open-confirm" onClick={onOpenConfrim}>
-        Open confirm
-      </button>
-
-      <button className="app-close" onClick={onClose}>
-        Close
-      </button>
-
-      {/* Here insert 'modal' */}
+      {/* insert modal */}
       {modal}
-
-      {/* Here insert 'confirm' */}
-      {confirm}
-
-      <div className="app-result">{result}</div>
     </div>
   );
 };
