@@ -1,0 +1,70 @@
+name: Publish storybook
+
+on:
+  push:
+    branches:
+      - publish-storybook/next
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: install
+        run: yarn install
+
+      - name: storybook build
+        run: yarn build-storybook
+
+      - uses: actions/checkout@v2-beta
+        with:
+          repository: "EvgenyiFedotov/evgenyifedotov.github.io"
+          path: "./evgenyifedotov-github"
+          token: ${{ secrets.GITHUB_TOKEN_APP }}
+
+      - name: copy storybook-static
+        run: |
+          mkdir -p ./evgenyifedotov-github/use-promise-element
+          cp -r ./storybook-static/* ./evgenyifedotov-github/use-promise-element
+
+      - name: setup repo
+        run: |
+          git config --global user.email "fedotov1290@gmail.com"
+          git config --global user.name "EvgenyiFedotov"
+
+      - name: create branch
+        run: |
+          cd ./evgenyifedotov-github
+          git checkout -b use-promise-element
+
+      - name: commit
+        run: |
+          cd ./evgenyifedotov-github
+          git add -A
+          git commit -m "[use-promise-element] update"
+
+      - name: push
+        run: |
+          cd ./evgenyifedotov-github
+          git push -u -f origin use-promise-element
+
+      - name: pull-request
+        run: |
+          cd ./evgenyifedotov-github
+          curl -X POST \
+            -u EvgenyiFedotov:${{ secrets.GITHUB_TOKEN_APP }} -k \
+            -d '{ "title": "[use-promise-element] update", "head": "EvgenyiFedotov:use-promise-element", "base": "master" }' \
+            -H "Content-Type: application/json" \
+            https://api.github.com/repos/EvgenyiFedotov/evgenyifedotov.github.io/pulls
